@@ -1,0 +1,79 @@
+Pomysł na projekt: Webowa Aplikacja do Zarządzania Zadaniami Zespołu z Animowanym Interfejsem (Team Task Manager)
+Opis ogólny:
+Aplikacja umożliwia zespołom zarządzanie zadaniami projektowymi w czasie rzeczywistym. Każdy użytkownik może tworzyć, edytować, przypisywać i śledzić postęp zadań. Interfejs webowy jest nowoczesny, responsywny i bogaty w animacje (np. płynne przejścia, animowane powiadomienia, efekty drag&drop).
+
+Technologie
+Backend (JVM):
+
+Java (Spring Boot, REST API)
+
+Gradle do budowania projektu
+
+Frontend:
+
+React.js (lub inny nowoczesny framework JS)
+
+Biblioteki animacji: Framer Motion, Anime.js, GSAP lub Lottie (np. Framer Motion dla płynnych przejść, Anime.js dla efektów na listach, Lottie do animowanych ikon)
+
+Baza danych:
+
+PostgreSQL lub H2 (do testów)
+
+Repozytorium:
+
+GitHub (dedykowane repo grupy)
+
+Kluczowe funkcjonalności
+Tworzenie i edycja zadań (tytuł, opis, termin, status, priorytet, przypisane osoby)
+
+Przeciąganie zadań między kolumnami (np. To Do, In Progress, Done) z animacją drag&drop
+
+Animowane powiadomienia o zmianach (np. toast z potwierdzeniem, animowane badge statusów)
+
+Historia zmian zadania (timeline z animowanym przewijaniem)
+
+Interaktywna tablica zadań (kanban) z płynnymi przejściami między widokami
+
+Filtrowanie i sortowanie zadań (z animowanymi efektami pojawiania się/zanikania)
+
+Responsywny design (działa na desktopie i tablecie)
+
+Panel użytkownika z animowanym menu i avatarami (można użyć Lottie do animacji avatarów)
+
+(Opcjonalnie) Chat zespołowy z animowanymi dymkami wiadomości
+
+Przykłady animacji
+Przeciąganie zadań: użycie Framer Motion lub GSAP do płynnych efektów przesuwania i upuszczania kart zadań.
+
+Animowane przejścia: np. fade-in/fade-out przy zmianie widoku, slide przy otwieraniu szczegółów zadania.
+
+Powiadomienia: pojawiające się i znikające toasty z Anime.js lub Lottie.
+
+Statusy: animowane badge statusów (np. zmiana koloru z płynnym przejściem).
+
+Avatar użytkownika: animowany avatar (np. lekko pulsujący, zmieniający kolor po zalogowaniu).
+
+Podział funkcjonalności na moduły (przykład dla 4 osób)
+Osoba	Moduł/Funkcjonalność	Przykładowe zadania
+Osoba 1	Backend: REST API, logika zadań	CRUD zadań, obsługa użytkowników, testy jednostkowe
+Osoba 2	Frontend: Tablica zadań, animacje	Kanban, drag&drop, animacje kart, responsywność
+Osoba 3	Frontend: Powiadomienia, panel usera	Animowane powiadomienia, menu, avatar, profil
+Osoba 4	Frontend: Historia, filtrowanie	Timeline, animacje przewijania, sortowanie, filtry
+Każda osoba implementuje swój moduł i robi commity do repozytorium.
+
+README.md
+Opis działania aplikacji
+
+Lista funkcjonalności z krótkimi opisami i screenshotami (np. animowane przejścia, drag&drop)
+
+Wskazanie osoby odpowiedzialnej za każdą funkcjonalność
+
+Inspiracje i uzasadnienie wyboru
+Aplikacje do zarządzania zadaniami są praktyczne i pozwalają na rozbudowane animacje (kanban, powiadomienia, timeline).
+
+Frontend oparty o nowoczesny stack JS daje duże możliwości animacji (Framer Motion, Anime.js, Lottie).
+
+Projekt spełnia kryteria: podział na moduły, testy jednostkowe backendu, rozbudowana struktura klas, animowany, nowoczesny interfejs.
+
+Podsumowanie
+Team Task Manager to nowoczesna, webowa aplikacja oparta o Javę (Spring Boot) z frontendem React i bogatymi animacjami. Pozwala zespołom na efektywne zarządzanie zadaniami, a jednocześnie prezentuje wysoki poziom techniczny i wizualny, co pozwala na uzyskanie najwyższej oceny zgodnie z wytycznymi projektu.
