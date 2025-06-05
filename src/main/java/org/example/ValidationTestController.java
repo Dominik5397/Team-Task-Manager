@@ -33,8 +33,24 @@ public class ValidationTestController {
         return ResponseEntity.ok(Map.of(
             "message", "Task validation passed successfully!",
             "title", task.getTitle(),
-            "status", task.getStatus(),
-            "priority", task.getPriority()
+            "status", task.getStatus().getDisplayName(),
+            "priority", task.getPriority().getDisplayName()
+        ));
+    }
+    
+    @GetMapping("/enum-values")
+    public ResponseEntity<Map<String, Object>> getEnumValues() {
+        return ResponseEntity.ok(Map.of(
+            "statuses", Map.of(
+                "TODO", TaskStatus.TODO.getDisplayName(),
+                "IN_PROGRESS", TaskStatus.IN_PROGRESS.getDisplayName(),
+                "DONE", TaskStatus.DONE.getDisplayName()
+            ),
+            "priorities", Map.of(
+                "LOW", TaskPriority.LOW.getDisplayName(),
+                "MEDIUM", TaskPriority.MEDIUM.getDisplayName(),
+                "HIGH", TaskPriority.HIGH.getDisplayName()
+            )
         ));
     }
 } 

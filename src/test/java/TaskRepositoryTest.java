@@ -22,12 +22,14 @@ public class TaskRepositoryTest {
         task.setTitle("Test task");
         task.setDescription("Opis testowego zadania");
         task.setDueDate(LocalDate.now().plusDays(7));
-        task.setStatus("To Do");
-        task.setPriority("High");
+        task.setStatus(TaskStatus.TODO);
+        task.setPriority(TaskPriority.HIGH);
         Task saved = taskRepository.save(task);
 
         List<Task> all = taskRepository.findAll();
         assertThat(all).isNotEmpty();
         assertThat(all.get(0).getTitle()).isEqualTo("Test task");
+        assertThat(all.get(0).getStatus()).isEqualTo(TaskStatus.TODO);
+        assertThat(all.get(0).getPriority()).isEqualTo(TaskPriority.HIGH);
     }
 } 

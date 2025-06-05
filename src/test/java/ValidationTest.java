@@ -64,8 +64,8 @@ public class ValidationTest {
         Task task = new Task();
         task.setTitle("Test Task");
         task.setDescription("Test description");
-        task.setStatus("To Do");
-        task.setPriority("High");
+        task.setStatus(TaskStatus.TODO);
+        task.setPriority(TaskPriority.HIGH);
         task.setDueDate(LocalDate.now().plusDays(7));
 
         Set<ConstraintViolation<Task>> violations = validator.validate(task);
@@ -76,8 +76,8 @@ public class ValidationTest {
     public void testTaskValidation_BlankTitle() {
         Task task = new Task();
         task.setTitle("");
-        task.setStatus("To Do");
-        task.setPriority("High");
+        task.setStatus(TaskStatus.TODO);
+        task.setPriority(TaskPriority.HIGH);
 
         Set<ConstraintViolation<Task>> violations = validator.validate(task);
         assertThat(violations).hasSize(2);
@@ -89,39 +89,77 @@ public class ValidationTest {
     }
 
     @Test
-    public void testTaskValidation_InvalidStatus() {
+    public void testTaskValidation_NullStatus() {
         Task task = new Task();
         task.setTitle("Test Task");
-        task.setStatus("Invalid Status");
-        task.setPriority("High");
+        task.setStatus(null);
+        task.setPriority(TaskPriority.HIGH);
 
         Set<ConstraintViolation<Task>> violations = validator.validate(task);
         assertThat(violations).hasSize(1);
-        assertThat(violations.iterator().next().getMessage()).contains("Status must be one of");
+        assertThat(violations.iterator().next().getMessage()).contains("Status is required");
     }
 
     @Test
-    public void testTaskValidation_InvalidPriority() {
+    public void testTaskValidation_NullPriority() {
         Task task = new Task();
         task.setTitle("Test Task");
-        task.setStatus("To Do");
-        task.setPriority("Invalid Priority");
+        task.setStatus(TaskStatus.TODO);
+        task.setPriority(null);
 
         Set<ConstraintViolation<Task>> violations = validator.validate(task);
         assertThat(violations).hasSize(1);
-        assertThat(violations.iterator().next().getMessage()).contains("Priority must be one of");
+        assertThat(violations.iterator().next().getMessage()).contains("Priority is required");
     }
 
     @Test
     public void testTaskValidation_PastDueDate() {
         Task task = new Task();
         task.setTitle("Test Task");
-        task.setStatus("To Do");
-        task.setPriority("High");
-        task.setDueDate(LocalDate.now().minusDays(1)); // Data w przeszłości
+        task.setStatus(TaskStatus.TODO);
+        task.setPriority(TaskPriority.HIGH);
+        task.setDueDate(LocalDate.now().minusDays(1));
 
         Set<ConstraintViolation<Task>> violations = validator.validate(task);
         assertThat(violations).hasSize(1);
         assertThat(violations.iterator().next().getMessage()).contains("Due date must be in the future");
+    }
+
+    @Test
+    public void testTaskStatus_EnumValues() {
+        assertThat(TaskStatus.TODO.getDisplayName()).isEqualTo("To Do");
+        assertThat(TaskStatus.IN_PROGRESS.getDisplayName()).isEqualTo("In Progress");
+        assertThat(TaskStatus.DONE.getDisplayName()).isEqualTo("Done");
+    }
+
+    @Test
+    public void testTaskPriority_EnumValues() {
+        assertThat(TaskPriority.LOW.getDisplayName()).isEqualTo("Low");
+        assertThat(TaskPriority.LOW.getLevel()).isEqualTo(1);
+        
+        assertThat(TaskPriority.MEDIUM.getDisplayName()).isEqualTo("Medium");
+        assertThat(TaskPriority.MEDIUM.getLevel()).isEqualTo(2);
+        
+        assertThat(TaskPriority.HIGH.getDisplayName()).isEqualTo("High");
+        assertThat(TaskPriority.HIGH.getLevel()).isEqualTo(3);
+        
+        assertThat(TaskPriority.HIGH.isHigherThan(TaskPriority.LOW)).isTrue();
+        assertThat(TaskPriority.LOW.isLowerThan(TaskPriority.HIGH)).isTrue();
+    }
+
+    @Test
+    public void testTaskStatus_FromString() {
+        assertThat(TaskStatus.fromString("To Do")).isEqualTo(TaskStatus.TODO);
+        assertThat(TaskStatus.fromString("TODO")).isEqualTo(TaskStatus.TODO);
+        assertThat(TaskStatus.fromString("In Progress")).isEqualTo(TaskStatus.IN_PROGRESS);
+        assertThat(TaskStatus.fromString("Done")).isEqualTo(TaskStatus.DONE);
+    }
+
+    @Test
+    public void testTaskPriority_FromString() {
+        assertThat(TaskPriority.fromString("Low")).isEqualTo(TaskPriority.LOW);
+        assertThat(TaskPriority.fromString("LOW")).isEqualTo(TaskPriority.LOW);
+        assertThat(TaskPriority.fromString("Medium")).isEqualTo(TaskPriority.MEDIUM);
+        assertThat(TaskPriority.fromString("High")).isEqualTo(TaskPriority.HIGH);
     }
 } 
