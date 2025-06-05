@@ -5,12 +5,12 @@ import java.util.Map;
 import java.util.HashMap;
 
 /**
- * Klasa przechowująca statystyki historii zmian.
+ * Class storing change history statistics.
  */
 public class ChangeLogStats {
     
-    private Long entityId; // ID zadania lub użytkownika
-    private String entityType; // "task" lub "user"
+    private Long entityId; // ID of task or user
+    private String entityType; // "task" or "user"
     private int totalChanges;
     private LocalDateTime firstChange;
     private LocalDateTime lastChange;
@@ -32,7 +32,7 @@ public class ChangeLogStats {
         this.entityType = entityType;
     }
 
-    // Gettery i settery
+    // Getters and setters
     public Long getEntityId() { return entityId; }
     public void setEntityId(Long entityId) { this.entityId = entityId; }
 
@@ -66,7 +66,7 @@ public class ChangeLogStats {
     public double getAverageChangesPerDay() { return averageChangesPerDay; }
     public void setAverageChangesPerDay(double averageChangesPerDay) { this.averageChangesPerDay = averageChangesPerDay; }
 
-    // Metody pomocnicze
+    // Helper methods
     public void addChangeByType(ChangeLogOperationType operationType) {
         changesByType.merge(operationType, 1, Integer::sum);
     }

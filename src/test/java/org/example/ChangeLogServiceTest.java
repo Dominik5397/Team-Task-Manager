@@ -285,10 +285,10 @@ class ChangeLogServiceTest {
         // Then
         assertNotNull(jsonHistory);
         assertFalse(jsonHistory.isEmpty());
-        assertTrue(jsonHistory.contains("\"fieldName\":\"title\""));
-        assertTrue(jsonHistory.contains("\"fieldName\":\"status\""));
-        assertTrue(jsonHistory.contains("\"operationType\":\"TITLE_CHANGE\""));
-        assertTrue(jsonHistory.contains("\"operationType\":\"STATUS_CHANGE\""));
+        assertTrue(jsonHistory.contains("\"fieldName\" : \"title\""));
+        assertTrue(jsonHistory.contains("\"fieldName\" : \"status\""));
+        assertTrue(jsonHistory.contains("\"operationType\" : \"TITLE_CHANGE\""));
+        assertTrue(jsonHistory.contains("\"operationType\" : \"STATUS_CHANGE\""));
     }
 
     @Test

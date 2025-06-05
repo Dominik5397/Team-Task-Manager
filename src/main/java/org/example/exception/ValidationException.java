@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 /**
- * Wyjątek rzucany gdy dane nie przechodzą walidacji biznesowej.
+ * Exception thrown when data fails business validation.
  */
 public class ValidationException extends RuntimeException {
     

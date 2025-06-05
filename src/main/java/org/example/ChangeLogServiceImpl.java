@@ -226,9 +226,19 @@ public class ChangeLogServiceImpl implements ChangeLogService {
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public String exportTaskHistoryToJson(Long taskId) {
         try {
             List<ChangeLogEntry> history = getTaskHistory(taskId);
+            // Force initialization of lazy properties for JSON serialization
+            for (ChangeLogEntry entry : history) {
+                if (entry.getTask() != null) {
+                    entry.getTask().getId(); // Force initialization
+                }
+                if (entry.getChangedBy() != null) {
+                    entry.getChangedBy().getId(); // Force initialization
+                }
+            }
             return objectMapper.writeValueAsString(history);
         } catch (Exception e) {
             throw new RuntimeException("Failed to export task history to JSON", e);

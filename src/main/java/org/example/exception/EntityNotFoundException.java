@@ -1,33 +1,33 @@
+/**
+ * Exception thrown when an entity cannot be found in the database.
+ */
 package org.example.exception;
 
-/**
- * Wyjątek rzucany gdy nie można znaleźć encji w bazie danych.
- */
 public class EntityNotFoundException extends RuntimeException {
     
-    private final String entityName;
+    private final String entityType;
     private final Object entityId;
 
-    public EntityNotFoundException(String entityName, Object entityId) {
-        super(String.format("%s not found with id: %s", entityName, entityId));
-        this.entityName = entityName;
+    public EntityNotFoundException(String entityType, Object entityId) {
+        super(String.format("%s not found with id: %s", entityType, entityId));
+        this.entityType = entityType;
         this.entityId = entityId;
     }
 
-    public EntityNotFoundException(String entityName, String fieldName, Object fieldValue) {
-        super(String.format("%s not found with %s: %s", entityName, fieldName, fieldValue));
-        this.entityName = entityName;
+    public EntityNotFoundException(String entityType, String fieldName, Object fieldValue) {
+        super(String.format("%s not found with %s: %s", entityType, fieldName, fieldValue));
+        this.entityType = entityType;
         this.entityId = fieldValue;
     }
 
     public EntityNotFoundException(String message) {
         super(message);
-        this.entityName = "Entity";
-        this.entityId = "unknown";
+        this.entityType = "Unknown";
+        this.entityId = null;
     }
 
-    public String getEntityName() {
-        return entityName;
+    public String getEntityType() {
+        return entityType;
     }
 
     public Object getEntityId() {

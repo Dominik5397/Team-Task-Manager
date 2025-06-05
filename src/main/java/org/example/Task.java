@@ -12,6 +12,10 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.ArrayList;
 
+/**
+ * Task entity representing a task in the task management system.
+ * Uses dedicated ChangeLogEntry entities for change tracking.
+ */
 @Entity
 @Table(name = "task")
 public class Task {
@@ -47,21 +51,23 @@ public class Task {
     private User assignedTo;
 
     /**
-     * Nowa szczegółowa historia zmian jako osobne encje
+     * Change history as dedicated entities managed by ChangeLogService
      */
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnoreProperties("task")
     private List<ChangeLogEntry> changeLogEntries = new ArrayList<>();
 
-    /**
-     * Stary format change log (JSON) - zachowany dla kompatybilności wstecznej
-     * @deprecated Używaj changeLogEntries zamiast tego pola
-     */
-    @Deprecated
-    @Column(columnDefinition = "TEXT")
-    private String changeLog;
+    // Constructors
+    public Task() {}
 
-    // Gettery i settery
+    public Task(String title, String description, TaskStatus status, TaskPriority priority) {
+        this.title = title;
+        this.description = description;
+        this.status = status;
+        this.priority = priority;
+    }
+
+    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     
@@ -85,20 +91,8 @@ public class Task {
     
     public List<ChangeLogEntry> getChangeLogEntries() { return changeLogEntries; }
     public void setChangeLogEntries(List<ChangeLogEntry> changeLogEntries) { this.changeLogEntries = changeLogEntries; }
-    
-    /**
-     * @deprecated Używaj getChangeLogEntries() zamiast tego
-     */
-    @Deprecated
-    public String getChangeLog() { return changeLog; }
-    
-    /**
-     * @deprecated Używaj addChangeLogEntry() zamiast tego
-     */
-    @Deprecated
-    public void setChangeLog(String changeLog) { this.changeLog = changeLog; }
 
-    // Metody pomocnicze
+    // Business Logic Methods
     public boolean isHighPriority() {
         return priority == TaskPriority.HIGH;
     }
@@ -111,8 +105,9 @@ public class Task {
         return status == TaskStatus.IN_PROGRESS;
     }
 
+    // Change Log Management Methods
     /**
-     * Dodaje nowy wpis do historii zmian
+     * Adds a new change log entry to this task
      */
     public void addChangeLogEntry(ChangeLogEntry entry) {
         if (changeLogEntries == null) {
@@ -123,7 +118,7 @@ public class Task {
     }
 
     /**
-     * Usuwa wpis z historii zmian
+     * Removes a change log entry from this task
      */
     public void removeChangeLogEntry(ChangeLogEntry entry) {
         if (changeLogEntries != null) {
@@ -133,16 +128,37 @@ public class Task {
     }
 
     /**
-     * Pobiera liczbę wpisów w historii zmian
+     * Gets the count of change log entries for this task
      */
     public int getChangeLogEntriesCount() {
         return changeLogEntries != null ? changeLogEntries.size() : 0;
     }
 
     /**
-     * Sprawdza czy zadanie ma jakiekolwiek wpisy w historii zmian
+     * Checks if this task has any change log entries
      */
     public boolean hasChangeLogEntries() {
         return changeLogEntries != null && !changeLogEntries.isEmpty();
+    }
+
+    // Backwards compatibility for JSON serialization
+    /**
+     * Returns empty string for backwards compatibility with frontend
+     * @deprecated Use getChangeLogEntries() instead
+     */
+    @Deprecated
+    public String getChangeLog() {
+        return "[]"; // Empty JSON array for compatibility
+    }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", status=" + status +
+                ", priority=" + priority +
+                ", assignedTo=" + (assignedTo != null ? assignedTo.getUsername() : "unassigned") +
+                '}';
     }
 } 

@@ -1,7 +1,7 @@
 package org.example.exception;
 
 /**
- * Wyjątek rzucany gdy naruszono reguły biznesowe aplikacji.
+ * Exception thrown when business rules of the application are violated.
  */
 public class BusinessLogicException extends RuntimeException {
     

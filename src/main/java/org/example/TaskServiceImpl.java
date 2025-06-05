@@ -1,23 +1,16 @@
 package org.example;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.Optional;
 import org.example.exception.EntityNotFoundException;
 import org.example.exception.BusinessLogicException;
 import org.example.exception.ValidationException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.core.type.TypeReference;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 /**
- * Implementacja serwisu obsługującego logikę biznesową dla zadań.
- * Zawiera operacje CRUD oraz zaawansowane funkcjonalności biznesowe.
- * Zaktualizowany o nowy system szczegółowego śledzenia zmian i obsługę wyjątków.
+ * Implementation of TaskService with comprehensive business logic,
+ * validation, and change logging using the new ChangeLogService system.
  */
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -34,13 +27,6 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private ChangeLogService changeLogService;
     
-    /**
-     * Wstrzyknięty, skonfigurowany ObjectMapper do obsługi JSON.
-     * Zarządzany centralnie przez JsonConfig.
-     */
-    @Autowired
-    private ObjectMapper objectMapper;
-    
     @Override
     public List<Task> getAllTasks() {
         return taskRepository.findAll();
@@ -53,45 +39,36 @@ public class TaskServiceImpl implements TaskService {
     
     @Override
     public Task createTask(Task task) {
-        // Walidacja biznesowa przed utworzeniem
+        // Set default status if not provided BEFORE validation
+        if (task.getStatus() == null) {
+            task.setStatus(TaskStatus.TODO);
+        }
+        
         validateTaskForCreation(task);
         
-        // Zapis zadania
         Task savedTask = taskRepository.save(task);
         
-        // Dodanie loga tworzenia (legacy)
-        addChangeLogEntry(savedTask, "created", "Task created: " + savedTask.getTitle());
-        
-        // Dodanie szczegółowego loga tworzenia (nowy system)
+        // Log task creation in the new system
         changeLogService.logChange(savedTask, "task", null, "created", 
                                  ChangeLogOperationType.CREATE, "Task created: " + savedTask.getTitle());
         
-        return taskRepository.save(savedTask);
+        return savedTask;
     }
     
     @Override
     public Task updateTask(Long id, Task task) {
-        Optional<Task> existingTaskOpt = taskRepository.findById(id);
+        Optional<Task> existingTaskOpt = getTaskById(id);
         if (existingTaskOpt.isEmpty()) {
             throw new EntityNotFoundException("Task", id);
         }
         
         Task existingTask = existingTaskOpt.get();
         
-        // Walidacja biznesowa przed aktualizacją
         validateTaskForUpdate(task, existingTask);
         
         task.setId(id);
         
-        // Zachowanie istniejącego loga (legacy)
-        if (existingTask.getChangeLog() != null) {
-            task.setChangeLog(existingTask.getChangeLog());
-        }
-        
-        // Sprawdzenie zmian i dodanie odpowiednich wpisów do loga (legacy)
-        addUpdateChangeLog(task, existingTask);
-        
-        // Automatyczne wykrycie i logowanie zmian w nowym systemie
+        // Automatic change detection and logging in the new system
         changeLogService.logTaskChanges(existingTask, task, null);
         
         return taskRepository.save(task);
@@ -106,10 +83,10 @@ public class TaskServiceImpl implements TaskService {
         
         Task task = taskOpt.get();
         
-        // Walidacja biznesowa przed usunięciem
+        // Business validation before deletion
         validateTaskForDeletion(task);
         
-        // Dodanie loga usunięcia w nowym systemie
+        // Log deletion in the new system
         changeLogService.logChange(task, "task", task.getTitle(), "deleted", 
                                  ChangeLogOperationType.DELETE, "Task deleted: " + task.getTitle());
         
@@ -148,22 +125,15 @@ public class TaskServiceImpl implements TaskService {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new EntityNotFoundException("User", userId));
         
-        // Walidacja biznesowa
+        // Business validation
         validateTaskAssignment(task, user);
         
         String oldAssignment = task.getAssignedTo() != null ? 
             task.getAssignedTo().getUsername() : "unassigned";
         
-        // Utworzenie kopii zadania do porównania
-        Task oldTask = createTaskCopy(task);
-        
         task.setAssignedTo(user);
         
-        // Legacy change log
-        addChangeLogEntry(task, "assigned", 
-            "Task assigned from '" + oldAssignment + "' to '" + user.getUsername() + "'");
-        
-        // Nowy system change log
+        // New system change log
         changeLogService.logChange(task, "assignedTo", oldAssignment, user.getUsername(), 
                                  ChangeLogOperationType.ASSIGN, user);
         
@@ -183,11 +153,7 @@ public class TaskServiceImpl implements TaskService {
         
         task.setAssignedTo(null);
         
-        // Legacy change log
-        addChangeLogEntry(task, "unassigned", 
-            "Task unassigned from '" + oldAssignment + "'");
-        
-        // Nowy system change log
+        // New system change log
         changeLogService.logChange(task, "assignedTo", oldAssignment, "unassigned", 
                                  ChangeLogOperationType.UNASSIGN);
         
@@ -205,7 +171,7 @@ public class TaskServiceImpl implements TaskService {
         
         TaskStatus oldStatus = task.getStatus();
         
-        // Walidacja przejść stanów
+        // Validate status transitions
         validateStatusTransition(oldStatus, newStatus);
         
         task.setStatus(newStatus);
@@ -213,11 +179,7 @@ public class TaskServiceImpl implements TaskService {
         String oldStatusName = oldStatus != null ? oldStatus.getDisplayName() : "none";
         String newStatusName = newStatus.getDisplayName();
         
-        // Legacy change log
-        addChangeLogEntry(task, "status_changed", 
-            "Status changed from '" + oldStatusName + "' to '" + newStatusName + "'");
-        
-        // Nowy system change log
+        // New system change log
         changeLogService.logChange(task, "status", oldStatusName, newStatusName, 
                                  ChangeLogOperationType.STATUS_CHANGE);
         
@@ -239,18 +201,14 @@ public class TaskServiceImpl implements TaskService {
         String oldPriorityName = oldPriority != null ? oldPriority.getDisplayName() : "none";
         String newPriorityName = newPriority.getDisplayName();
         
-        // Legacy change log
-        addChangeLogEntry(task, "priority_changed", 
-            "Priority changed from '" + oldPriorityName + "' to '" + newPriorityName + "'");
-        
-        // Nowy system change log
+        // New system change log
         changeLogService.logChange(task, "priority", oldPriorityName, newPriorityName, 
                                  ChangeLogOperationType.PRIORITY_CHANGE);
         
         return taskRepository.save(task);
     }
 
-    // Metody walidacji biznesowej
+    // Business validation methods
     
     private void validateTaskForCreation(Task task) {
         if (task == null) {
@@ -265,9 +223,7 @@ public class TaskServiceImpl implements TaskService {
             throw new ValidationException("title", "Task title must be at least 3 characters long");
         }
         
-        if (task.getStatus() == null) {
-            throw new ValidationException("status", "Task status is required");
-        }
+        // Status validation removed since we set default status before validation
         
         if (task.getPriority() == null) {
             throw new ValidationException("priority", "Task priority is required");
@@ -277,7 +233,7 @@ public class TaskServiceImpl implements TaskService {
     private void validateTaskForUpdate(Task newTask, Task existingTask) {
         validateTaskForCreation(newTask);
         
-        // Sprawdzenie czy zadanie nie jest w stanie który uniemożliwia edycję
+        // Check if task is in a state that prevents editing
         if (existingTask.getStatus() == TaskStatus.DONE) {
             throw new BusinessLogicException("TASK_COMPLETED", 
                 "Cannot modify completed task. Change status first.");
@@ -285,7 +241,7 @@ public class TaskServiceImpl implements TaskService {
     }
     
     private void validateTaskForDeletion(Task task) {
-        // Sprawdzenie czy zadanie nie jest w trakcie realizacji
+        // Check if task is not in progress
         if (task.getStatus() == TaskStatus.IN_PROGRESS) {
             throw new BusinessLogicException("TASK_IN_PROGRESS", 
                 "Cannot delete task that is in progress. Complete or cancel the task first.");
@@ -293,13 +249,13 @@ public class TaskServiceImpl implements TaskService {
     }
     
     private void validateTaskAssignment(Task task, User user) {
-        // Sprawdzenie czy zadanie nie jest już zakończone
+        // Check if task is not already completed
         if (task.getStatus() == TaskStatus.DONE) {
             throw new BusinessLogicException("TASK_COMPLETED", 
                 "Cannot assign completed task to user");
         }
         
-        // Sprawdzenie czy użytkownik nie ma już za dużo zadań (przykład reguły biznesowej)
+        // Check if user doesn't have too many tasks (business rule example)
         List<Task> userTasks = taskRepository.findByAssignedTo_Id(user.getId());
         long activeTasks = userTasks.stream()
             .filter(t -> t.getStatus() != TaskStatus.DONE)
@@ -313,159 +269,33 @@ public class TaskServiceImpl implements TaskService {
     }
     
     private void validateStatusTransition(TaskStatus oldStatus, TaskStatus newStatus) {
-        // Przykładowe reguły przejść stanów
+        // Example status transition rules
         if (oldStatus == TaskStatus.DONE && newStatus != TaskStatus.DONE) {
             throw new BusinessLogicException("INVALID_STATUS_TRANSITION", 
                 "Cannot change status of completed task. Task must remain completed.");
         }
         
-        // Można dodać więcej reguł przejść...
+        // More transition rules can be added...
     }
 
-    /**
-     * Tworzy kopię zadania do porównania (shallow copy wystarczący dla naszych potrzeb)
-     */
-    private Task createTaskCopy(Task original) {
-        Task copy = new Task();
-        copy.setId(original.getId());
-        copy.setTitle(original.getTitle());
-        copy.setDescription(original.getDescription());
-        copy.setStatus(original.getStatus());
-        copy.setPriority(original.getPriority());
-        copy.setDueDate(original.getDueDate());
-        copy.setAssignedTo(original.getAssignedTo());
-        copy.setChangeLog(original.getChangeLog());
-        return copy;
-    }
+    // New methods for advanced change history management
     
     /**
-     * Dodaje wpis do loga zmian zadania (legacy system).
-     * Używa wstrzykniętego ObjectMapper z globalną konfiguracją.
-     * @deprecated Używaj changeLogService.logChange() w nowym kodzie
-     */
-    @Deprecated
-    private void addChangeLogEntry(Task task, String action, String description) {
-        try {
-            List<Map<String, Object>> log = getCurrentChangeLog(task);
-            
-            Map<String, Object> logEntry = Map.of(
-                "timestamp", LocalDateTime.now(),
-                "action", action,
-                "description", description,
-                "title", task.getTitle() != null ? task.getTitle() : ""
-            );
-            
-            log.add(logEntry);
-            task.setChangeLog(objectMapper.writeValueAsString(log));
-        } catch (Exception e) {
-            // W przypadku błędu serializacji, ustawiamy podstawowy log z informacją o błędzie
-            String errorLog = String.format(
-                "[{\"timestamp\":\"%s\",\"action\":\"%s\",\"description\":\"%s\",\"error\":\"JSON serialization failed: %s\"}]",
-                LocalDateTime.now().toString(), action, description, e.getMessage()
-            );
-            task.setChangeLog(errorLog);
-        }
-    }
-    
-    /**
-     * Dodaje wpisy do loga na podstawie zmian między starą a nową wersją zadania (legacy system).
-     * Wykorzystuje szczegółowe porównanie pól i czytelne opisy zmian.
-     * @deprecated Używaj changeLogService.logTaskChanges() w nowym kodzie
-     */
-    @Deprecated
-    private void addUpdateChangeLog(Task newTask, Task oldTask) {
-        List<String> changes = new ArrayList<>();
-        
-        // Sprawdzenie zmian w tytule
-        if (!newTask.getTitle().equals(oldTask.getTitle())) {
-            changes.add(String.format("title from '%s' to '%s'", 
-                oldTask.getTitle(), newTask.getTitle()));
-        }
-        
-        // Sprawdzenie zmian w opisie
-        if (!java.util.Objects.equals(newTask.getDescription(), oldTask.getDescription())) {
-            String oldDesc = oldTask.getDescription() != null ? 
-                (oldTask.getDescription().length() > 50 ? 
-                    oldTask.getDescription().substring(0, 50) + "..." : oldTask.getDescription()) : "empty";
-            String newDesc = newTask.getDescription() != null ? 
-                (newTask.getDescription().length() > 50 ? 
-                    newTask.getDescription().substring(0, 50) + "..." : newTask.getDescription()) : "empty";
-            changes.add(String.format("description from '%s' to '%s'", oldDesc, newDesc));
-        }
-        
-        // Sprawdzenie zmian w statusie
-        if (!java.util.Objects.equals(newTask.getStatus(), oldTask.getStatus())) {
-            changes.add(String.format("status from '%s' to '%s'",
-                oldTask.getStatus() != null ? oldTask.getStatus().getDisplayName() : "none",
-                newTask.getStatus().getDisplayName()));
-        }
-        
-        // Sprawdzenie zmian w priorytecie
-        if (!java.util.Objects.equals(newTask.getPriority(), oldTask.getPriority())) {
-            changes.add(String.format("priority from '%s' to '%s'",
-                oldTask.getPriority() != null ? oldTask.getPriority().getDisplayName() : "none",
-                newTask.getPriority().getDisplayName()));
-        }
-        
-        // Sprawdzenie zmian w dacie wykonania
-        if (!java.util.Objects.equals(newTask.getDueDate(), oldTask.getDueDate())) {
-            changes.add(String.format("due date from '%s' to '%s'",
-                oldTask.getDueDate() != null ? oldTask.getDueDate().toString() : "none",
-                newTask.getDueDate() != null ? newTask.getDueDate().toString() : "none"));
-        }
-        
-        // Sprawdzenie zmian w przypisaniu użytkownika
-        if (!java.util.Objects.equals(
-                newTask.getAssignedTo() != null ? newTask.getAssignedTo().getId() : null,
-                oldTask.getAssignedTo() != null ? oldTask.getAssignedTo().getId() : null)) {
-            changes.add(String.format("assignment from '%s' to '%s'",
-                oldTask.getAssignedTo() != null ? oldTask.getAssignedTo().getUsername() : "unassigned",
-                newTask.getAssignedTo() != null ? newTask.getAssignedTo().getUsername() : "unassigned"));
-        }
-        
-        if (!changes.isEmpty()) {
-            String description = "Updated: " + String.join("; ", changes);
-            addChangeLogEntry(newTask, "updated", description);
-        }
-    }
-    
-    /**
-     * Pobiera obecny log zmian lub tworzy nowy (legacy system).
-     * Używa wstrzykniętego ObjectMapper z obsługą błędów.
-     * @deprecated Używaj changeLogService.getTaskHistory() w nowym kodzie
-     */
-    @Deprecated
-    private List<Map<String, Object>> getCurrentChangeLog(Task task) {
-        if (task.getChangeLog() == null || task.getChangeLog().isEmpty()) {
-            return new ArrayList<>();
-        }
-        
-        try {
-            return objectMapper.readValue(task.getChangeLog(), new TypeReference<>() {});
-        } catch (Exception e) {
-            // W przypadku błędu parsowania, zwracamy nową listę i logujemy błąd
-            return new ArrayList<>();
-        }
-    }
-
-    // Nowe metody dla zaawansowanego zarządzania historią zmian
-    
-    /**
-     * Pobiera szczegółową historię zmian dla zadania
+     * Gets detailed change history for a task
      */
     public List<ChangeLogEntry> getTaskChangeHistory(Long taskId) {
         return changeLogService.getTaskHistory(taskId);
     }
     
     /**
-     * Pobiera statystyki zmian dla zadania
+     * Gets change statistics for a task
      */
     public ChangeLogStats getTaskChangeStats(Long taskId) {
         return changeLogService.getTaskChangeStats(taskId);
     }
     
     /**
-     * Eksportuje historię zmian zadania do JSON
+     * Exports task change history to JSON
      */
     public String exportTaskChangeHistory(Long taskId) {
         return changeLogService.exportTaskHistoryToJson(taskId);

@@ -16,6 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -26,6 +27,9 @@ public class TaskServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private ChangeLogService changeLogService;
 
     @InjectMocks
     private TaskServiceImpl taskService;
@@ -91,7 +95,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    void createTask_ShouldAddChangeLogAndSaveTask() {
+    void createTask_ShouldLogChangeAndSaveTask() {
         // Given
         when(taskRepository.save(any(Task.class))).thenReturn(testTask);
 
@@ -100,9 +104,33 @@ public class TaskServiceTest {
 
         // Then
         assertThat(result).isEqualTo(testTask);
-        assertThat(testTask.getChangeLog()).isNotNull();
-        assertThat(testTask.getChangeLog()).contains("created");
         verify(taskRepository).save(testTask);
+        verify(changeLogService).logChange(
+            eq(testTask), 
+            eq("task"), 
+            eq(null), 
+            eq("created"), 
+            eq(ChangeLogOperationType.CREATE), 
+            contains("Task created:")
+        );
+    }
+
+    @Test
+    void createTask_WithNullStatus_ShouldSetDefaultStatus() {
+        // Given
+        Task taskWithoutStatus = new Task();
+        taskWithoutStatus.setTitle("Test Task");
+        taskWithoutStatus.setPriority(TaskPriority.HIGH);
+        taskWithoutStatus.setStatus(null);
+
+        when(taskRepository.save(any(Task.class))).thenReturn(taskWithoutStatus);
+
+        // When
+        Task result = taskService.createTask(taskWithoutStatus);
+
+        // Then
+        assertThat(taskWithoutStatus.getStatus()).isEqualTo(TaskStatus.TODO);
+        verify(taskRepository).save(taskWithoutStatus);
     }
 
     @Test
@@ -129,45 +157,54 @@ public class TaskServiceTest {
         assertThat(result.getId()).isEqualTo(1L);
         verify(taskRepository).findById(1L);
         verify(taskRepository).save(any(Task.class));
+        verify(changeLogService).logTaskChanges(eq(existingTask), any(Task.class), eq(null));
     }
 
     @Test
-    void updateTask_WhenTaskDoesNotExist_ShouldThrowException() {
+    void updateTask_WhenTaskDoesNotExist_ShouldThrowEntityNotFoundException() {
         // Given
         when(taskRepository.findById(1L)).thenReturn(Optional.empty());
 
         // When & Then
         assertThatThrownBy(() -> taskService.updateTask(1L, testTask))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("Task not found with id: 1");
+                .isInstanceOf(org.example.exception.EntityNotFoundException.class)
+                .hasMessageContaining("Task not found");
     }
 
     @Test
-    void deleteTask_WhenTaskExists_ShouldDeleteTask() {
+    void deleteTask_WhenTaskExists_ShouldDeleteTaskAndLogChange() {
         // Given
-        when(taskRepository.existsById(1L)).thenReturn(true);
+        when(taskRepository.findById(1L)).thenReturn(Optional.of(testTask));
 
         // When
         taskService.deleteTask(1L);
 
         // Then
-        verify(taskRepository).existsById(1L);
+        verify(taskRepository).findById(1L);
         verify(taskRepository).deleteById(1L);
+        verify(changeLogService).logChange(
+            eq(testTask), 
+            eq("task"), 
+            eq(testTask.getTitle()), 
+            eq("deleted"), 
+            eq(ChangeLogOperationType.DELETE), 
+            contains("Task deleted:")
+        );
     }
 
     @Test
-    void deleteTask_WhenTaskDoesNotExist_ShouldThrowException() {
+    void deleteTask_WhenTaskDoesNotExist_ShouldThrowEntityNotFoundException() {
         // Given
-        when(taskRepository.existsById(1L)).thenReturn(false);
+        when(taskRepository.findById(1L)).thenReturn(Optional.empty());
 
         // When & Then
         assertThatThrownBy(() -> taskService.deleteTask(1L))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("Task not found with id: 1");
+                .isInstanceOf(org.example.exception.EntityNotFoundException.class)
+                .hasMessageContaining("Task not found");
     }
 
     @Test
-    void assignTaskToUser_ShouldAssignUserAndAddChangeLog() {
+    void assignTaskToUser_ShouldAssignUserAndLogChange() {
         // Given
         when(taskRepository.findById(1L)).thenReturn(Optional.of(testTask));
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
@@ -178,37 +215,65 @@ public class TaskServiceTest {
 
         // Then
         assertThat(result.getAssignedTo()).isEqualTo(testUser);
-        assertThat(result.getChangeLog()).contains("assigned");
         verify(taskRepository).findById(1L);
         verify(userRepository).findById(1L);
         verify(taskRepository).save(testTask);
+        verify(changeLogService).logChange(
+            eq(testTask), 
+            eq("assignedTo"), 
+            eq("unassigned"), 
+            eq(testUser.getUsername()), 
+            eq(ChangeLogOperationType.ASSIGN), 
+            eq(testUser)
+        );
     }
 
     @Test
-    void assignTaskToUser_WhenTaskNotFound_ShouldThrowException() {
+    void assignTaskToUser_WhenTaskNotFound_ShouldThrowEntityNotFoundException() {
         // Given
         when(taskRepository.findById(1L)).thenReturn(Optional.empty());
 
         // When & Then
         assertThatThrownBy(() -> taskService.assignTaskToUser(1L, 1L))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("Task not found with id: 1");
+                .isInstanceOf(org.example.exception.EntityNotFoundException.class)
+                .hasMessageContaining("Task not found");
     }
 
     @Test
-    void assignTaskToUser_WhenUserNotFound_ShouldThrowException() {
+    void assignTaskToUser_WhenUserNotFound_ShouldThrowEntityNotFoundException() {
         // Given
         when(taskRepository.findById(1L)).thenReturn(Optional.of(testTask));
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
         // When & Then
         assertThatThrownBy(() -> taskService.assignTaskToUser(1L, 1L))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("User not found with id: 1");
+                .isInstanceOf(org.example.exception.EntityNotFoundException.class)
+                .hasMessageContaining("User not found");
     }
 
     @Test
-    void changeTaskStatus_ShouldUpdateStatusAndAddChangeLog() {
+    void unassignTask_ShouldUnassignUserAndLogChange() {
+        // Given
+        testTask.setAssignedTo(testUser);
+        when(taskRepository.findById(1L)).thenReturn(Optional.of(testTask));
+        when(taskRepository.save(any(Task.class))).thenReturn(testTask);
+
+        // When
+        Task result = taskService.unassignTask(1L);
+
+        // Then
+        assertThat(result.getAssignedTo()).isNull();
+        verify(changeLogService).logChange(
+            eq(testTask), 
+            eq("assignedTo"), 
+            eq(testUser.getUsername()), 
+            eq("unassigned"), 
+            eq(ChangeLogOperationType.UNASSIGN)
+        );
+    }
+
+    @Test
+    void changeTaskStatus_ShouldUpdateStatusAndLogChange() {
         // Given
         testTask.setStatus(TaskStatus.TODO);
         when(taskRepository.findById(1L)).thenReturn(Optional.of(testTask));
@@ -219,12 +284,18 @@ public class TaskServiceTest {
 
         // Then
         assertThat(result.getStatus()).isEqualTo(TaskStatus.IN_PROGRESS);
-        assertThat(result.getChangeLog()).contains("status_changed");
         verify(taskRepository).save(testTask);
+        verify(changeLogService).logChange(
+            eq(testTask), 
+            eq("status"), 
+            eq("To Do"), 
+            eq("In Progress"), 
+            eq(ChangeLogOperationType.STATUS_CHANGE)
+        );
     }
 
     @Test
-    void changeTaskPriority_ShouldUpdatePriorityAndAddChangeLog() {
+    void changeTaskPriority_ShouldUpdatePriorityAndLogChange() {
         // Given
         testTask.setPriority(TaskPriority.LOW);
         when(taskRepository.findById(1L)).thenReturn(Optional.of(testTask));
@@ -235,14 +306,21 @@ public class TaskServiceTest {
 
         // Then
         assertThat(result.getPriority()).isEqualTo(TaskPriority.HIGH);
-        assertThat(result.getChangeLog()).contains("priority_changed");
         verify(taskRepository).save(testTask);
+        verify(changeLogService).logChange(
+            eq(testTask), 
+            eq("priority"), 
+            eq("Low"), 
+            eq("High"), 
+            eq(ChangeLogOperationType.PRIORITY_CHANGE)
+        );
     }
 
     @Test
-    void getTasksByUser_ShouldReturnUserTasks() {
+    void getTasksByUser_WithValidUserId_ShouldReturnUserTasks() {
         // Given
         List<Task> expectedTasks = Arrays.asList(testTask);
+        when(userRepository.existsById(1L)).thenReturn(true);
         when(taskRepository.findByAssignedTo_Id(1L)).thenReturn(expectedTasks);
 
         // When
@@ -250,7 +328,19 @@ public class TaskServiceTest {
 
         // Then
         assertThat(result).isEqualTo(expectedTasks);
+        verify(userRepository).existsById(1L);
         verify(taskRepository).findByAssignedTo_Id(1L);
+    }
+
+    @Test
+    void getTasksByUser_WithInvalidUserId_ShouldThrowEntityNotFoundException() {
+        // Given
+        when(userRepository.existsById(1L)).thenReturn(false);
+
+        // When & Then
+        assertThatThrownBy(() -> taskService.getTasksByUser(1L))
+                .isInstanceOf(org.example.exception.EntityNotFoundException.class)
+                .hasMessageContaining("User not found");
     }
 
     @Test
@@ -268,6 +358,14 @@ public class TaskServiceTest {
     }
 
     @Test
+    void getTasksByStatus_WithNullStatus_ShouldThrowIllegalArgumentException() {
+        // When & Then
+        assertThatThrownBy(() -> taskService.getTasksByStatus(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Task status cannot be null");
+    }
+
+    @Test
     void getTasksByPriority_ShouldReturnTasksWithGivenPriority() {
         // Given
         List<Task> expectedTasks = Arrays.asList(testTask);
@@ -279,5 +377,56 @@ public class TaskServiceTest {
         // Then
         assertThat(result).isEqualTo(expectedTasks);
         verify(taskRepository).findByPriority(TaskPriority.HIGH);
+    }
+
+    @Test
+    void getTasksByPriority_WithNullPriority_ShouldThrowIllegalArgumentException() {
+        // When & Then
+        assertThatThrownBy(() -> taskService.getTasksByPriority(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Task priority cannot be null");
+    }
+
+    // Tests for new ChangeLogService integration methods
+    @Test
+    void getTaskChangeHistory_ShouldReturnChangeHistory() {
+        // Given
+        List<ChangeLogEntry> expectedHistory = Arrays.asList(new ChangeLogEntry());
+        when(changeLogService.getTaskHistory(1L)).thenReturn(expectedHistory);
+
+        // When
+        List<ChangeLogEntry> result = taskService.getTaskChangeHistory(1L);
+
+        // Then
+        assertThat(result).isEqualTo(expectedHistory);
+        verify(changeLogService).getTaskHistory(1L);
+    }
+
+    @Test
+    void getTaskChangeStats_ShouldReturnChangeStats() {
+        // Given
+        ChangeLogStats expectedStats = new ChangeLogStats();
+        when(changeLogService.getTaskChangeStats(1L)).thenReturn(expectedStats);
+
+        // When
+        ChangeLogStats result = taskService.getTaskChangeStats(1L);
+
+        // Then
+        assertThat(result).isEqualTo(expectedStats);
+        verify(changeLogService).getTaskChangeStats(1L);
+    }
+
+    @Test
+    void exportTaskChangeHistory_ShouldReturnExportedHistory() {
+        // Given
+        String expectedExport = "exported history";
+        when(changeLogService.exportTaskHistoryToJson(1L)).thenReturn(expectedExport);
+
+        // When
+        String result = taskService.exportTaskChangeHistory(1L);
+
+        // Then
+        assertThat(result).isEqualTo(expectedExport);
+        verify(changeLogService).exportTaskHistoryToJson(1L);
     }
 } 
