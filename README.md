@@ -1,359 +1,359 @@
-# Team Task Manager - Modern Task Management Application
+# Team Task Manager - Nowoczesna Aplikacja do Zarządzania Zadaniami
 
-![Team Task Manager](https://img.shields.io/badge/Status-Production%20Ready-green)
+![Team Task Manager](https://img.shields.io/badge/Status-Gotowa%20do%20Produkcji-green)
 ![Frontend](https://img.shields.io/badge/Frontend-React%20TypeScript-blue)
 ![Backend](https://img.shields.io/badge/Backend-Spring%20Boot-brightgreen)
 ![Database](https://img.shields.io/badge/Database-H2-orange)
 ![Architecture](https://img.shields.io/badge/Architecture-Service%20Layer-purple)
 
-## 🚀 Overview
+## 🚀 Przegląd
 
-Team Task Manager is a modern, animated web application for team task management built with cutting-edge technologies. It features a beautiful glassmorphism design, rich animations, comprehensive project management capabilities, and a robust service layer architecture.
+Team Task Manager to nowoczesna, animowana aplikacja internetowa do zarządzania zadaniami zespołowymi zbudowana z wykorzystaniem najnowszych technologii. Aplikacja charakteryzuje się pięknym designem glassmorphism, bogatymi animacjami, wszechstronnymi możliwościami zarządzania projektami oraz solidną architekturą warstwy usług.
 
-## ✨ Key Features
+## ✨ Kluczowe Funkcje
 
-### 🎨 Modern Design
-- **Glassmorphism UI** with backdrop-filter effects
-- **Animated background** with floating particles
-- **Responsive design** that works on all devices
-- **Rich animations** using our proven dual-library strategy ([see ANIMATION_STRATEGY.md](ANIMATION_STRATEGY.md))
-  - **Framer Motion** for all UI animations and interactions
-  - **Lottie React** for complex vector animations and illustrations
-- **Beautiful gradients** and custom CSS properties
+### 🎨 Nowoczesny Design
+- **Interfejs Glassmorphism** z efektami backdrop-filter
+- **Animowane tło** z unoszącymi się cząsteczkami
+- **Responsywny design** działający na wszystkich urządzeniach
+- **Bogate animacje** wykorzystujące naszą sprawdzoną strategię dwóch bibliotek ([zobacz ANIMATION_STRATEGY.md](ANIMATION_STRATEGY.md))
+  - **Framer Motion** dla wszystkich animacji UI i interakcji
+  - **Lottie React** dla złożonych animacji wektorowych i ilustracji
+- **Piękne gradienty** i niestandardowe właściwości CSS
 
-### 📊 Task Management
-- **Kanban Board** with drag & drop functionality
-- **Task CRUD operations** (Create, Read, Update, Delete)
-- **Priority system** (High, Medium, Low) with visual indicators
-- **Status tracking** (To Do, In Progress, Done)
-- **Due date management** with overdue detection
-- **User assignment** with team member profiles
-- **Automatic change logging** for all task operations
-- **Advanced task filtering** by user, status, and priority
+### 📊 Zarządzanie Zadaniami
+- **Tablica Kanban** z funkcją przeciągnij i upuść
+- **Operacje CRUD zadań** (Tworzenie, Odczyt, Aktualizacja, Usuwanie)
+- **System priorytetów** (Wysoki, Średni, Niski) z wizualnymi wskaźnikami
+- **Śledzenie statusu** (Do Zrobienia, W Trakcie, Ukończone)
+- **Zarządzanie terminami** z wykrywaniem przeterminowanych
+- **Przypisywanie użytkowników** z profilami członków zespołu
+- **Automatyczne logowanie zmian** dla wszystkich operacji na zadaniach
+- **Zaawansowane filtrowanie zadań** według użytkownika, statusu i priorytetu
 
-### 📈 Advanced Analytics
-- **Interactive Dashboard** with real-time statistics
-- **Circular progress charts** for completion rates
-- **Priority and status distribution** with animated progress bars
-- **Team performance tracking** with individual metrics
-- **Project completion analytics**
-- **User statistics** with completion rates and task breakdowns
+### 📈 Zaawansowana Analityka
+- **Interaktywny Dashboard** z statystykami w czasie rzeczywistym
+- **Okrągłe wykresy postępu** dla wskaźników ukończenia
+- **Rozkład priorytetów i statusów** z animowanymi paskami postępu
+- **Śledzenie wydajności zespołu** z indywidualnymi metrykami
+- **Analityka ukończenia projektów**
+- **Statystyki użytkowników** ze współczynnikami ukończenia i podziałem zadań
 
-### 🔔 Smart Notifications
-- **Real-time notification center** with animated bell icon
-- **Overdue task alerts**
-- **Due date reminders** (today & tomorrow)
-- **Achievement notifications** for progress milestones
-- **Animated notification badges**
+### 🔔 Inteligentny System Powiadomień
+- **Centrum powiadomień w czasie rzeczywistym** z animowaną ikoną dzwonka
+- **Alerty przeterminowanych zadań**
+- **Przypomnienia o terminach** (dzisiaj i jutro)
+- **Powiadomienia o osiągnięciach** dla kamieni milowych postępu
+- **Animowane znaczki powiadomień**
 
-### 📄 Data Export
-- **CSV export** for tasks, team reports, and project summaries
-- **Comprehensive reporting** with detailed statistics
-- **Data visualization** for better insights
+### 📄 Eksport Danych
+- **Eksport CSV** dla zadań, raportów zespołowych i podsumowań projektów
+- **Kompleksowe raportowanie** ze szczegółowymi statystykami
+- **Wizualizacja danych** dla lepszego wglądu
 
-### 🏗️ Service Layer Architecture
-- **Clean separation** of concerns between controllers, services, and repositories
-- **Business logic encapsulation** in dedicated service classes
-- **Comprehensive validation** and error handling
-- **Automatic change tracking** for audit trails
-- **Extensive unit testing** with high coverage
+### 🏗️ Architektura Warstwy Usług
+- **Czyste rozdzielenie** obowiązków między kontrolerami, usługami i repozytoriami
+- **Enkapsulacja logiki biznesowej** w dedykowanych klasach usług
+- **Kompleksowa walidacja** i obsługa błędów
+- **Automatyczne śledzenie zmian** dla ścieżek audytu
+- **Obszerne testy jednostkowe** z wysokim pokryciem
 
-## 🛠 Technology Stack
+## 🛠 Stos Technologiczny
 
 ### Backend
-- **Java 17** with Spring Boot 3.x
-- **Service Layer Architecture** with clean separation of concerns
-- **Spring Data JPA** for database operations
-- **Jakarta Validation** for data validation
-- **Type-safe enums** for status and priority
-- **H2 Database** for development and testing
-- **REST API** with JSON serialization
-- **Gradle** for build management
-- **JUnit 5 & Mockito** for comprehensive testing
+- **Java 17** ze Spring Boot 3.x
+- **Architektura Warstwy Usług** z czystym rozdzieleniem obowiązków
+- **Spring Data JPA** dla operacji bazodanowych
+- **Jakarta Validation** dla walidacji danych
+- **Type-safe enums** dla statusów i priorytetów
+- **Baza danych H2** dla rozwoju i testowania
+- **REST API** z serializacją JSON
+- **Gradle** do zarządzania buildem
+- **JUnit 5 & Mockito** dla kompleksowych testów
 
 ### Frontend
-- **React 18** with TypeScript
-- **Framer Motion** for advanced animations
-- **React Beautiful DnD** for drag & drop
-- **Lottie React** for animated icons
-- **Modern CSS** with custom properties and glassmorphism
+- **React 18** z TypeScript
+- **Framer Motion** dla zaawansowanych animacji
+- **React Beautiful DnD** dla przeciągnij i upuść
+- **Lottie React** dla animowanych ikon
+- **Nowoczesny CSS** z niestandardowymi właściwościami i glassmorphism
 
-## 🏗 Architecture
+## 🏗 Architektura
 
-### Service Layer Architecture
+### Architektura Warstwy Usług
 ```
-Controller Layer (HTTP/REST)
+Warstwa Kontrolerów (HTTP/REST)
     ↓
-Service Layer (Business Logic)
+Warstwa Usług (Logika Biznesowa)
     ↓
-Repository Layer (Data Access)
+Warstwa Repozytoriów (Dostęp do Danych)
     ↓
-Database Layer (H2)
+Warstwa Bazy Danych (H2)
 ```
 
-### Backend Structure
+### Struktura Backend
 ```
 src/main/java/org/example/
 ├── entities/
-│   ├── Task.java              # Task entity with validation
-│   ├── User.java              # User entity with relationships
-│   ├── TaskStatus.java        # Type-safe status enum
-│   ├── TaskPriority.java      # Type-safe priority enum
-│   └── UserStats.java         # User statistics model
+│   ├── Task.java              # Encja zadania z walidacją
+│   ├── User.java              # Encja użytkownika z relacjami
+│   ├── TaskStatus.java        # Type-safe enum statusu
+│   ├── TaskPriority.java      # Type-safe enum priorytetu
+│   └── UserStats.java         # Model statystyk użytkownika
 ├── services/
-│   ├── TaskService.java       # Task business logic interface
-│   ├── TaskServiceImpl.java   # Task service implementation
-│   ├── UserService.java       # User business logic interface
-│   └── UserServiceImpl.java   # User service implementation
+│   ├── TaskService.java       # Interfejs logiki biznesowej zadań
+│   ├── TaskServiceImpl.java   # Implementacja serwisu zadań
+│   ├── UserService.java       # Interfejs logiki biznesowej użytkowników
+│   └── UserServiceImpl.java   # Implementacja serwisu użytkowników
 ├── controllers/
-│   ├── TaskController.java    # Task REST endpoints
-│   ├── UserController.java    # User REST endpoints
-│   └── EnumController.java    # Enum values API
+│   ├── TaskController.java    # Endpointy REST zadań
+│   ├── UserController.java    # Endpointy REST użytkowników
+│   └── EnumController.java    # API wartości enum
 ├── repositories/
-│   ├── TaskRepository.java    # Task data access
-│   └── UserRepository.java    # User data access
+│   ├── TaskRepository.java    # Dostęp do danych zadań
+│   └── UserRepository.java    # Dostęp do danych użytkowników
 ├── validation/
-│   └── GlobalExceptionHandler.java # Global error handling
-└── Main.java                  # Spring Boot application entry
+│   └── GlobalExceptionHandler.java # Globalna obsługa błędów
+└── Main.java                  # Punkt wejścia aplikacji Spring Boot
 ```
 
-### Frontend Structure
+### Struktura Frontend
 ```
 frontend/src/
 ├── components/
-│   ├── Dashboard.tsx        # Analytics dashboard with charts
-│   ├── StatsCard.tsx       # Animated statistics cards
-│   ├── TaskCard.tsx        # Individual task components
-│   └── NotificationCenter.tsx # Smart notification system
+│   ├── Dashboard.tsx        # Dashboard analityczny z wykresami
+│   ├── StatsCard.tsx       # Animowane karty statystyk
+│   ├── TaskCard.tsx        # Komponenty pojedynczych zadań
+│   └── NotificationCenter.tsx # Inteligentny system powiadomień
 ├── utils/
-│   └── csvExport.ts        # Data export utilities
+│   └── csvExport.ts        # Narzędzia eksportu danych
 ├── lottie/
-│   └── avatar.json         # Animated avatar data
-└── App.tsx                 # Main application component
+│   └── avatar.json         # Dane animowanego awatara
+└── App.tsx                 # Główny komponent aplikacji
 ```
 
-## 🚀 Getting Started
+## 🚀 Rozpoczęcie Pracy
 
-### Prerequisites
-- Java 17 or higher
-- Node.js 16+ and npm
+### Wymagania Wstępne
+- Java 17 lub wyższa
+- Node.js 16+ i npm
 - Git
 
-### Installation
+### Instalacja
 
-1. **Clone the repository**
+1. **Sklonuj repozytorium**
 ```bash
 git clone <repository-url>
 cd Team-Task-Manager
 ```
 
-2. **Start the backend**
+2. **Uruchom backend**
 ```bash
 ./gradlew bootRun
 ```
-Backend will start on `http://localhost:8080`
+Backend zostanie uruchomiony na `http://localhost:8080`
 
-3. **Start the frontend** (in a new terminal)
+3. **Uruchom frontend** (w nowym terminalu)
 ```bash
 cd frontend
 npm install
 npm start
 ```
-Frontend will start on `http://localhost:3000`
+Frontend zostanie uruchomiony na `http://localhost:3000`
 
-### Sample Data
-The application includes sample users and tasks:
-- **Users**: Jan Kowalski, Anna Nowak, Piotr Wiśniewski
-- **Tasks**: Various priority levels and statuses
-- **Demo data** for testing all features
+### Przykładowe Dane
+Aplikacja zawiera przykładowych użytkowników i zadania:
+- **Użytkownicy**: Jan Kowalski, Anna Nowak, Piotr Wiśniewski
+- **Zadania**: Różne poziomy priorytetów i statusów
+- **Dane demonstracyjne** do testowania wszystkich funkcji
 
-## 🎯 Core Functionalities
+## 🎯 Główne Funkcjonalności
 
-### 1. Task Management
-- Create tasks with title, description, priority, due date
-- Assign tasks to team members
-- Drag & drop between status columns
-- Real-time status updates
-- **Automatic change logging** with timestamps and descriptions
-- **Advanced filtering** by user, status, priority
-- **Task assignment/unassignment** with audit trail
+### 1. Zarządzanie Zadaniami
+- Tworzenie zadań z tytułem, opisem, priorytetem, terminem
+- Przypisywanie zadań członkom zespołu
+- Przeciąganie i upuszczanie między kolumnami statusów
+- Aktualizacje statusu w czasie rzeczywistym
+- **Automatyczne logowanie zmian** z znacznikami czasu i opisami
+- **Zaawansowane filtrowanie** według użytkownika, statusu, priorytetu
+- **Przypisywanie/odpisywanie zadań** ze ścieżką audytu
 
-### 2. User Management
-- **User CRUD operations** with validation
-- **Email and username uniqueness** validation
-- **User statistics** calculation (completion rates, task breakdowns)
-- **Automatic task unassignment** when deleting users
-- **User search** by email and username
+### 2. Zarządzanie Użytkownikami
+- **Operacje CRUD użytkowników** z walidacją
+- **Walidacja unikalności** email i nazwy użytkownika
+- **Obliczanie statystyk użytkowników** (współczynniki ukończenia, podział zadań)
+- **Automatyczne odpisywanie zadań** przy usuwaniu użytkowników
+- **Wyszukiwanie użytkowników** według email i nazwy użytkownika
 
-### 3. Dashboard Analytics
-- Project completion rate with circular charts
-- Priority distribution visualization
-- Team performance metrics
-- Real-time statistics updates
-- **Individual user statistics** with detailed breakdowns
+### 3. Analityka Dashboard
+- Wskaźnik ukończenia projektu z okrągłymi wykresami
+- Wizualizacja rozkładu priorytetów
+- Metryki wydajności zespołu
+- Aktualizacje statystyk w czasie rzeczywistym
+- **Indywidualne statystyki użytkowników** ze szczegółowymi podziałami
 
-### 4. Notification System
-- Animated notification bell with badge counter
-- Smart alerts for overdue tasks
-- Due date reminders
-- Progress achievement notifications
-- Expandable notification center
+### 4. System Powiadomień
+- Animowany dzwonek powiadomień z licznikiem znaczków
+- Inteligentne alerty dla przeterminowanych zadań
+- Przypomnienia o terminach
+- Powiadomienia o osiągnięciach postępu
+- Rozszerzalne centrum powiadomień
 
-### 5. Data Export
-- Export tasks to CSV format
-- Generate team performance reports
-- Create project summary documents
-- Download with timestamped filenames
+### 5. Eksport Danych
+- Eksport zadań do formatu CSV
+- Generowanie raportów wydajności zespołu
+- Tworzenie dokumentów podsumowania projektu
+- Pobieranie z nazwami plików z znacznikami czasu
 
-## 🎨 Design Features
+## 🎨 Funkcje Designu
 
-### Animations
-- **Page transitions** with staggered animations
-- **Hover effects** on interactive elements
-- **Loading states** with smooth transitions
-- **Drag & drop feedback** with rotation effects
-- **Notification animations** with spring physics
+### Animacje
+- **Przejścia stron** z animacjami schodkowymi
+- **Efekty hover** na elementach interaktywnych
+- **Stany ładowania** z płynnymi przejściami
+- **Feedback przeciągnij i upuść** z efektami rotacji
+- **Animacje powiadomień** z fizyką sprężyn
 
-### Visual Design
-- **Glassmorphism cards** with backdrop blur
-- **Gradient backgrounds** and borders
-- **Animated floating particles**
-- **Responsive grid layouts**
-- **Modern typography** with Inter font
+### Design Wizualny
+- **Karty glassmorphism** z rozmyciem tła
+- **Gradienty tła** i obramowania
+- **Animowane unoszące się cząsteczki**
+- **Responsywne układy siatki**
+- **Nowoczesna typografia** z czcionką Inter
 
-## 🔧 API Endpoints
+## 🔧 Endpointy API
 
-### Task Management
-- `GET /api/tasks` - Get all tasks
-- `POST /api/tasks` - Create new task (with validation)
-- `PUT /api/tasks/{id}` - Update task (with change logging)
-- `DELETE /api/tasks/{id}` - Delete task
-- `GET /api/tasks/{id}` - Get task details
-- `GET /api/tasks/user/{userId}` - Get tasks by user
-- `GET /api/tasks/status/{status}` - Get tasks by status
-- `GET /api/tasks/priority/{priority}` - Get tasks by priority
-- `PUT /api/tasks/{taskId}/assign/{userId}` - Assign task to user
-- `PUT /api/tasks/{taskId}/unassign` - Unassign task
-- `PUT /api/tasks/{taskId}/status?status={status}` - Change task status
-- `PUT /api/tasks/{taskId}/priority?priority={priority}` - Change task priority
+### Zarządzanie Zadaniami
+- `GET /api/tasks` - Pobierz wszystkie zadania
+- `POST /api/tasks` - Utwórz nowe zadanie (z walidacją)
+- `PUT /api/tasks/{id}` - Aktualizuj zadanie (z logowaniem zmian)
+- `DELETE /api/tasks/{id}` - Usuń zadanie
+- `GET /api/tasks/{id}` - Pobierz szczegóły zadania
+- `GET /api/tasks/user/{userId}` - Pobierz zadania według użytkownika
+- `GET /api/tasks/status/{status}` - Pobierz zadania według statusu
+- `GET /api/tasks/priority/{priority}` - Pobierz zadania według priorytetu
+- `PUT /api/tasks/{taskId}/assign/{userId}` - Przypisz zadanie użytkownikowi
+- `PUT /api/tasks/{taskId}/unassign` - Odpisz zadanie
+- `PUT /api/tasks/{taskId}/status?status={status}` - Zmień status zadania
+- `PUT /api/tasks/{taskId}/priority?priority={priority}` - Zmień priorytet zadania
 
-### User Management
-- `GET /api/users` - Get all users
-- `POST /api/users` - Create new user (with validation)
-- `PUT /api/users/{id}` - Update user (with uniqueness validation)
-- `DELETE /api/users/{id}` - Delete user (with task cleanup)
-- `GET /api/users/{id}` - Get user details
-- `GET /api/users/{userId}/stats` - Get user statistics
-- `GET /api/users/email/{email}` - Find user by email
-- `GET /api/users/username/{username}` - Find user by username
-- `GET /api/users/check-email/{email}` - Check email existence
-- `GET /api/users/check-username/{username}` - Check username existence
-- `GET /api/users/with-tasks` - Get users with assigned tasks
-- `GET /api/users/without-tasks` - Get users without tasks
-- `POST /api/users/seed` - Initialize sample data
+### Zarządzanie Użytkownikami
+- `GET /api/users` - Pobierz wszystkich użytkowników
+- `POST /api/users` - Utwórz nowego użytkownika (z walidacją)
+- `PUT /api/users/{id}` - Aktualizuj użytkownika (z walidacją unikalności)
+- `DELETE /api/users/{id}` - Usuń użytkownika (z czyszczeniem zadań)
+- `GET /api/users/{id}` - Pobierz szczegóły użytkownika
+- `GET /api/users/{userId}/stats` - Pobierz statystyki użytkownika
+- `GET /api/users/email/{email}` - Znajdź użytkownika według email
+- `GET /api/users/username/{username}` - Znajdź użytkownika według nazwy
+- `GET /api/users/check-email/{email}` - Sprawdź istnienie email
+- `GET /api/users/check-username/{username}` - Sprawdź istnienie nazwy użytkownika
+- `GET /api/users/with-tasks` - Pobierz użytkowników z przypisanymi zadaniami
+- `GET /api/users/without-tasks` - Pobierz użytkowników bez zadań
+- `POST /api/users/seed` - Zainicjuj przykładowe dane
 
-### Enum Values
-- `GET /api/enums/all` - Get all enum values with metadata
-- `GET /api/enums/task-statuses` - Get task status values
-- `GET /api/enums/task-priorities` - Get task priority values
+### Wartości Enum
+- `GET /api/enums/all` - Pobierz wszystkie wartości enum z metadanymi
+- `GET /api/enums/task-statuses` - Pobierz wartości statusów zadań
+- `GET /api/enums/task-priorities` - Pobierz wartości priorytetów zadań
 
-## 🧪 Testing
+## 🧪 Testowanie
 
-### Unit Tests
-- **TaskServiceTest** - Comprehensive service layer testing
-- **UserServiceTest** - User business logic testing
-- **ValidationTest** - Data validation testing
-- **EnumTest** - Type-safe enum testing
+### Testy Jednostkowe
+- **TaskServiceTest** - Kompleksowe testowanie warstwy usług
+- **UserServiceTest** - Testowanie logiki biznesowej użytkowników
+- **ValidationTest** - Testowanie walidacji danych
+- **EnumTest** - Testowanie type-safe enum
 
-### Test Coverage
-- Service layer business logic
-- Validation scenarios
-- Error handling
-- Change logging functionality
-- Statistics calculation
+### Pokrycie Testów
+- Logika biznesowa warstwy usług
+- Scenariusze walidacji
+- Obsługa błędów
+- Funkcjonalność logowania zmian
+- Obliczanie statystyk
 
-### Running Tests
+### Uruchamianie Testów
 ```bash
 ./gradlew test
 ```
 
-## 📱 **Responsive Design**
+## 📱 **Responsywny Design**
 
-The application is fully responsive with:
-- **Mobile-first approach**
-- **Flexible grid layouts**
-- **Touch-friendly interactions**
-- **GPU-optimized animations** for mobile ([see Performance Guide](ANIMATION_PERFORMANCE_GUIDE.md))
-- **Adaptive component sizing**
+Aplikacja jest w pełni responsywna z:
+- **Podejście mobile-first**
+- **Elastyczne układy siatki**
+- **Interakcje przyjazne dla dotyku**
+- **Animacje zoptymalizowane dla GPU** na urządzeniach mobilnych ([zobacz Przewodnik Wydajności](ANIMATION_PERFORMANCE_GUIDE.md))
+- **Adaptacyjne rozmiary komponentów**
 
-## 📚 **Documentation**
+## 📚 **Dokumentacja**
 
-- **[Animation Strategy](ANIMATION_STRATEGY.md)** - Comprehensive animation architecture and dual-library approach
-- **[Performance Guide](ANIMATION_PERFORMANCE_GUIDE.md)** - 60fps optimization techniques and GPU acceleration
-- **[Service Layer Guide](SERVICE_LAYER_GUIDE.md)** - Detailed architecture documentation
-- **[Validation Guide](VALIDATION_GUIDE.md)** - Data validation and enum implementation
-- **API Documentation** - Available through endpoint exploration
+- **[Strategia Animacji](ANIMATION_STRATEGY.md)** - Kompleksowa architektura animacji i podejście dwóch bibliotek
+- **[Przewodnik Wydajności](ANIMATION_PERFORMANCE_GUIDE.md)** - Techniki optymalizacji 60fps i akceleracja GPU
+- **[Przewodnik Warstwy Usług](SERVICE_LAYER_GUIDE.md)** - Szczegółowa dokumentacja architektury
+- **[Przewodnik Walidacji](VALIDATION_GUIDE.md)** - Walidacja danych i implementacja enum
+- **Dokumentacja API** - Dostępna poprzez eksplorację endpointów
 
-## 🎭 **Animation Showcase**
+## 🎭 **Pokaz Animacji**
 
-### GPU-Optimized Performance
-- **60fps animations** using only `transform` and `opacity`
-- **Zero layout thrashing** with hardware acceleration
-- **Device-adaptive performance** based on capabilities
-- **Real-time monitoring** tools for development
+### Wydajność Zoptymalizowana pod GPU
+- **Animacje 60fps** używające tylko `transform` i `opacity`
+- **Zero layout thrashing** z akceleracją sprzętową
+- **Wydajność adaptacyjna dla urządzenia** na podstawie możliwości
+- **Narzędzia monitorowania w czasie rzeczywistym** dla rozwoju
 
-### Micro-interactions
-- Button hover effects with scale and color transitions
-- Card animations with lift and shadow effects
-- Loading spinners with CSS animations
-- Form validation with shake effects
+### Mikro-interakcje
+- Efekty hover przycisków ze skalowaniem i przejściami kolorów
+- Animacje kart z efektami podnoszenia i cienia
+- Spinnery ładowania z animacjami CSS
+- Walidacja formularzy z efektami potrząsania
 
-## 📊 Performance Features
+## 📊 Funkcje Wydajności
 
-- **Lazy loading** for components
-- **Optimized animations** with transform and opacity
-- **Efficient re-renders** with React.memo and useMemo
-- **Smooth 60fps animations** with GPU acceleration
+- **Lazy loading** dla komponentów
+- **Zoptymalizowane animacje** z transform i opacity
+- **Efektywne re-rendery** z React.memo i useMemo
+- **Płynne animacje 60fps** z akceleracją GPU
 
-## 🛡 Production Ready Features
+## 🛡 Funkcje Gotowe do Produkcji
 
-- **Error handling** with graceful fallbacks
-- **Loading states** for better UX
-- **Type safety** with TypeScript
-- **Cross-browser compatibility**
-- **Accessibility** considerations
+- **Obsługa błędów** z graceful fallbacks
+- **Stany ładowania** dla lepszego UX
+- **Bezpieczeństwo typów** z TypeScript
+- **Kompatybilność międzyprzeglądarkowa**
+- **Uwagi na dostępność**
 
-## 🎯 Project Goals Achieved
+## 🎯 Osiągnięte Cele Projektu
 
-✅ **Modern Interface** - Glassmorphism design with rich animations  
-✅ **Task Management** - Complete CRUD operations with drag & drop  
-✅ **Team Collaboration** - User assignment and team performance tracking  
-✅ **Data Visualization** - Interactive charts and real-time statistics  
-✅ **Smart Notifications** - Automated alerts and progress tracking  
-✅ **Export Capabilities** - CSV exports for data analysis  
-✅ **Responsive Design** - Works perfectly on all devices  
-✅ **Production Quality** - Error handling, loading states, type safety  
+✅ **Nowoczesny Interfejs** - Design glassmorphism z bogatymi animacjami  
+✅ **Zarządzanie Zadaniami** - Kompletne operacje CRUD z przeciągnij i upuść  
+✅ **Współpraca Zespołowa** - Przypisywanie użytkowników i śledzenie wydajności zespołu  
+✅ **Wizualizacja Danych** - Interaktywne wykresy i statystyki w czasie rzeczywistym  
+✅ **Inteligentne Powiadomienia** - Automatyczne alerty i śledzenie postępu  
+✅ **Możliwości Eksportu** - Eksporty CSV do analizy danych  
+✅ **Responsywny Design** - Działa perfekcyjnie na wszystkich urządzeniach  
+✅ **Jakość Produkcyjna** - Obsługa błędów, stany ładowania, bezpieczeństwo typów  
 
-## 🔮 Future Enhancements
+## 🔮 Przyszłe Ulepszenia
 
-- Real-time collaboration with WebSockets
-- Advanced filtering and search capabilities
-- File attachments for tasks
-- Time tracking functionality
-- Integration with external calendar systems
-- Advanced reporting with charts
-- Multi-project support
-- Dark/light theme toggle
+- Współpraca w czasie rzeczywistym z WebSockets
+- Zaawansowane możliwości filtrowania i wyszukiwania
+- Załączniki plików do zadań
+- Funkcjonalność śledzenia czasu
+- Integracja z zewnętrznymi systemami kalendarzy
+- Zaawansowane raportowanie z wykresami
+- Wsparcie dla wielu projektów
+- Przełącznik motywu ciemny/jasny
 
-## 👥 Team & Contributions
+## 👥 Zespół i Wkłady
 
-This project demonstrates modern full-stack development practices with:
-- Clean architecture and separation of concerns
-- Comprehensive error handling and validation
-- Beautiful UI/UX with accessibility in mind
-- Performance optimization and responsive design
-- Modern development tools and best practices
+Ten projekt demonstruje nowoczesne praktyki full-stack development z:
+- Czystą architekturą i rozdzieleniem obowiązków
+- Kompleksową obsługą błędów i walidacją
+- Pięknym UI/UX z myślą o dostępności
+- Optymalizacją wydajności i responsywnym designem
+- Nowoczesnymi narzędziami deweloperskimi i najlepszymi praktykami
 
 ---
 
-**Built with ❤️ using React, Spring Boot, and modern web technologies.** 
+**Zbudowane z ❤️ używając React, Spring Boot i nowoczesnych technologii webowych.** 
