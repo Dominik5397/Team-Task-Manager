@@ -24,7 +24,12 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private UserRepository userRepository;
     
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    /**
+     * Wstrzyknięty, skonfigurowany ObjectMapper do obsługi JSON.
+     * Zarządzany centralnie przez JsonConfig.
+     */
+    @Autowired
+    private ObjectMapper objectMapper;
     
     @Override
     public List<Task> getAllTasks() {
@@ -151,14 +156,15 @@ public class TaskServiceImpl implements TaskService {
     }
     
     /**
-     * Dodaje wpis do loga zmian zadania
+     * Dodaje wpis do loga zmian zadania.
+     * Używa wstrzykniętego ObjectMapper z globalną konfiguracją.
      */
     private void addChangeLogEntry(Task task, String action, String description) {
         try {
             List<Map<String, Object>> log = getCurrentChangeLog(task);
             
             Map<String, Object> logEntry = Map.of(
-                "timestamp", LocalDateTime.now().toString(),
+                "timestamp", LocalDateTime.now(),
                 "action", action,
                 "description", description,
                 "title", task.getTitle() != null ? task.getTitle() : ""
@@ -167,61 +173,78 @@ public class TaskServiceImpl implements TaskService {
             log.add(logEntry);
             task.setChangeLog(objectMapper.writeValueAsString(log));
         } catch (Exception e) {
-            // W przypadku błędu serializacji, ustawiamy podstawowy log
-            task.setChangeLog("[{\"timestamp\":\"" + LocalDateTime.now().toString() + 
-                "\",\"action\":\"" + action + "\",\"error\":\"Log serialization failed\"}]");
+            // W przypadku błędu serializacji, ustawiamy podstawowy log z informacją o błędzie
+            String errorLog = String.format(
+                "[{\"timestamp\":\"%s\",\"action\":\"%s\",\"description\":\"%s\",\"error\":\"JSON serialization failed: %s\"}]",
+                LocalDateTime.now().toString(), action, description, e.getMessage()
+            );
+            task.setChangeLog(errorLog);
         }
     }
     
     /**
-     * Dodaje wpisy do loga na podstawie zmian między starą a nową wersją zadania
+     * Dodaje wpisy do loga na podstawie zmian między starą a nową wersją zadania.
+     * Wykorzystuje szczegółowe porównanie pól i czytelne opisy zmian.
      */
     private void addUpdateChangeLog(Task newTask, Task oldTask) {
-        StringBuilder changes = new StringBuilder("Updated: ");
-        boolean hasChanges = false;
+        List<String> changes = new ArrayList<>();
         
         // Sprawdzenie zmian w tytule
         if (!newTask.getTitle().equals(oldTask.getTitle())) {
-            changes.append("title from '").append(oldTask.getTitle())
-                   .append("' to '").append(newTask.getTitle()).append("'; ");
-            hasChanges = true;
+            changes.add(String.format("title from '%s' to '%s'", 
+                oldTask.getTitle(), newTask.getTitle()));
         }
         
         // Sprawdzenie zmian w opisie
         if (!java.util.Objects.equals(newTask.getDescription(), oldTask.getDescription())) {
-            changes.append("description; ");
-            hasChanges = true;
+            String oldDesc = oldTask.getDescription() != null ? 
+                (oldTask.getDescription().length() > 50 ? 
+                    oldTask.getDescription().substring(0, 50) + "..." : oldTask.getDescription()) : "empty";
+            String newDesc = newTask.getDescription() != null ? 
+                (newTask.getDescription().length() > 50 ? 
+                    newTask.getDescription().substring(0, 50) + "..." : newTask.getDescription()) : "empty";
+            changes.add(String.format("description from '%s' to '%s'", oldDesc, newDesc));
         }
         
         // Sprawdzenie zmian w statusie
         if (!java.util.Objects.equals(newTask.getStatus(), oldTask.getStatus())) {
-            changes.append("status from '")
-                   .append(oldTask.getStatus() != null ? oldTask.getStatus().getDisplayName() : "none")
-                   .append("' to '").append(newTask.getStatus().getDisplayName()).append("'; ");
-            hasChanges = true;
+            changes.add(String.format("status from '%s' to '%s'",
+                oldTask.getStatus() != null ? oldTask.getStatus().getDisplayName() : "none",
+                newTask.getStatus().getDisplayName()));
         }
         
         // Sprawdzenie zmian w priorytecie
         if (!java.util.Objects.equals(newTask.getPriority(), oldTask.getPriority())) {
-            changes.append("priority from '")
-                   .append(oldTask.getPriority() != null ? oldTask.getPriority().getDisplayName() : "none")
-                   .append("' to '").append(newTask.getPriority().getDisplayName()).append("'; ");
-            hasChanges = true;
+            changes.add(String.format("priority from '%s' to '%s'",
+                oldTask.getPriority() != null ? oldTask.getPriority().getDisplayName() : "none",
+                newTask.getPriority().getDisplayName()));
         }
         
         // Sprawdzenie zmian w dacie wykonania
         if (!java.util.Objects.equals(newTask.getDueDate(), oldTask.getDueDate())) {
-            changes.append("due date; ");
-            hasChanges = true;
+            changes.add(String.format("due date from '%s' to '%s'",
+                oldTask.getDueDate() != null ? oldTask.getDueDate().toString() : "none",
+                newTask.getDueDate() != null ? newTask.getDueDate().toString() : "none"));
         }
         
-        if (hasChanges) {
-            addChangeLogEntry(newTask, "updated", changes.toString());
+        // Sprawdzenie zmian w przypisaniu użytkownika
+        if (!java.util.Objects.equals(
+                newTask.getAssignedTo() != null ? newTask.getAssignedTo().getId() : null,
+                oldTask.getAssignedTo() != null ? oldTask.getAssignedTo().getId() : null)) {
+            changes.add(String.format("assignment from '%s' to '%s'",
+                oldTask.getAssignedTo() != null ? oldTask.getAssignedTo().getUsername() : "unassigned",
+                newTask.getAssignedTo() != null ? newTask.getAssignedTo().getUsername() : "unassigned"));
+        }
+        
+        if (!changes.isEmpty()) {
+            String description = "Updated: " + String.join("; ", changes);
+            addChangeLogEntry(newTask, "updated", description);
         }
     }
     
     /**
-     * Pobiera obecny log zmian lub tworzy nowy
+     * Pobiera obecny log zmian lub tworzy nowy.
+     * Używa wstrzykniętego ObjectMapper z obsługą błędów.
      */
     private List<Map<String, Object>> getCurrentChangeLog(Task task) {
         if (task.getChangeLog() == null || task.getChangeLog().isEmpty()) {
@@ -231,6 +254,7 @@ public class TaskServiceImpl implements TaskService {
         try {
             return objectMapper.readValue(task.getChangeLog(), new TypeReference<>() {});
         } catch (Exception e) {
+            // W przypadku błędu parsowania, zwracamy nową listę i logujemy błąd
             return new ArrayList<>();
         }
     }

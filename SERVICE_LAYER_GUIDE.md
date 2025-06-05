@@ -16,6 +16,58 @@ Controller → Repository
 Controller → Service → Repository
 ```
 
+## Konfiguracja JSON (ObjectMapper)
+
+### Centralne zarządzanie JSON
+
+Aplikacja używa **centralnej konfiguracji ObjectMapper** zamiast lokalnych instancji. Konfiguracja znajduje się w klasie `JsonConfig`:
+
+```java
+@Configuration
+public class JsonConfig {
+    
+    @Bean
+    @Primary
+    public ObjectMapper objectMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        
+        // Obsługa Java 8 Time API
+        mapper.registerModule(new JavaTimeModule());
+        
+        // Formatowanie dat jako ISO strings (nie timestamps)
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        
+        // Ignorowanie nieznanych pól podczas deserializacji
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        
+        // Ignorowanie null wartości w JSON
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        
+        // Czytelne formatowanie JSON
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        
+        // Obsługa pustych obiektów
+        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        
+        return mapper;
+    }
+}
+```
+
+#### Korzyści centralnej konfiguracji:
+- **Spójność**: Wszystkie komponenty używają tych samych ustawień JSON
+- **Maintainability**: Łatwe zmiany konfiguracji w jednym miejscu
+- **Testowalność**: Jednolite testowanie serializacji/deserializacji
+- **Performance**: Jedna skonfigurowana instancja dla całej aplikacji
+
+#### Testowanie konfiguracji JSON:
+```
+GET /api/json-test/date-formatting      - Test formatowania dat
+GET /api/json-test/null-handling         - Test ignorowania null
+GET /api/json-test/object-mapper-demo    - Demo ObjectMapper
+POST /api/json-test/unknown-fields       - Test nieznanych pól
+```
+
 ## Komponenty warstwy serwisowej
 
 ### 1. TaskService
