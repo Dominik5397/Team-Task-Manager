@@ -1,6 +1,11 @@
 package org.example;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.LocalDate;
 
@@ -11,10 +16,24 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Title is required")
+    @Size(min = 3, max = 100, message = "Title must be between 3 and 100 characters")
     private String title;
+    
+    @Size(max = 1000, message = "Description must not exceed 1000 characters")
     private String description;
+    
+    @Future(message = "Due date must be in the future")
     private LocalDate dueDate;
+    
+    @NotBlank(message = "Status is required")
+    @Pattern(regexp = "^(To Do|In Progress|Done)$", 
+             message = "Status must be one of: To Do, In Progress, Done")
     private String status;
+    
+    @NotBlank(message = "Priority is required")
+    @Pattern(regexp = "^(Low|Medium|High)$", 
+             message = "Priority must be one of: Low, Medium, High")
     private String priority;
 
     @ManyToOne

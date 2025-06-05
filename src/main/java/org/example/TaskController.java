@@ -2,6 +2,7 @@ package org.example;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 import java.time.LocalDateTime;
@@ -27,7 +28,7 @@ public class TaskController {
     }
 
     @PostMapping
-    public Task createTask(@RequestBody Task task) {
+    public Task createTask(@Valid @RequestBody Task task) {
         List<Map<String, Object>> log = new ArrayList<>();
         log.add(Map.of(
             "timestamp", LocalDateTime.now().toString(),
@@ -42,7 +43,7 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public Task updateTask(@PathVariable Long id, @RequestBody Task task) {
+    public Task updateTask(@PathVariable Long id, @Valid @RequestBody Task task) {
         task.setId(id);
         Task old = taskRepository.findById(id).orElse(null);
         if (old != null) {
