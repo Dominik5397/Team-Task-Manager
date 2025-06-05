@@ -11,9 +11,9 @@ Gradle do budowania projektu
 
 Frontend:
 
-React.js (lub inny nowoczesny framework JS)
+React.js z TypeScript
 
-Biblioteki animacji: Framer Motion, Anime.js, GSAP lub Lottie (np. Framer Motion dla płynnych przejść, Anime.js dla efektów na listach, Lottie do animowanych ikon)
+Biblioteki animacji: Framer Motion (główna biblioteka dla wszystkich animacji UI) i Lottie React (specjalistyczna biblioteka do złożonych animacji wektorowych jak avatary i ikony)
 
 Baza danych:
 
@@ -38,20 +38,20 @@ Filtrowanie i sortowanie zadań (z animowanymi efektami pojawiania się/zanikani
 
 Responsywny design (działa na desktopie i tablecie)
 
-Panel użytkownika z animowanym menu i avatarami (można użyć Lottie do animacji avatarów)
+Panel użytkownika z animowanym menu i avatarami (Lottie do animacji avatarów)
 
 (Opcjonalnie) Chat zespołowy z animowanymi dymkami wiadomości
 
 Przykłady animacji
-Przeciąganie zadań: użycie Framer Motion lub GSAP do płynnych efektów przesuwania i upuszczania kart zadań.
+Przeciąganie zadań: użycie Framer Motion do płynnych efektów przesuwania i upuszczania kart zadań.
 
-Animowane przejścia: np. fade-in/fade-out przy zmianie widoku, slide przy otwieraniu szczegółów zadania.
+Animowane przejścia: fade-in/fade-out przy zmianie widoku, slide przy otwieraniu szczegółów zadania z Framer Motion.
 
-Powiadomienia: pojawiające się i znikające toasty z Anime.js lub Lottie.
+Powiadomienia: pojawiające się i znikające toasty z animacjami Framer Motion.
 
-Statusy: animowane badge statusów (np. zmiana koloru z płynnym przejściem).
+Statusy: animowane badge statusów (np. zmiana koloru z płynnym przejściem) przy użyciu Framer Motion.
 
-Avatar użytkownika: animowany avatar (np. lekko pulsujący, zmieniający kolor po zalogowaniu).
+Avatar użytkownika: złożone animowane avatary z użyciem Lottie (wektorowe animacje z After Effects).
 
 Podział funkcjonalności na moduły (przykład dla 4 osób)
 Osoba	Moduł/Funkcjonalność	Przykładowe zadania
@@ -71,9 +71,11 @@ Wskazanie osoby odpowiedzialnej za każdą funkcjonalność
 Inspiracje i uzasadnienie wyboru
 Aplikacje do zarządzania zadaniami są praktyczne i pozwalają na rozbudowane animacje (kanban, powiadomienia, timeline).
 
-Frontend oparty o nowoczesny stack JS daje duże możliwości animacji (Framer Motion, Anime.js, Lottie).
+Frontend oparty o nowoczesny stack JS z React i TypeScript daje duże możliwości animacji z Framer Motion jako główną biblioteką.
+
+Lottie umożliwia użycie profesjonalnych animacji wektorowych stworzonych w After Effects.
 
 Projekt spełnia kryteria: podział na moduły, testy jednostkowe backendu, rozbudowana struktura klas, animowany, nowoczesny interfejs.
 
 Podsumowanie
-Team Task Manager to nowoczesna, webowa aplikacja oparta o Javę (Spring Boot) z frontendem React i bogatymi animacjami. Pozwala zespołom na efektywne zarządzanie zadaniami, a jednocześnie prezentuje wysoki poziom techniczny i wizualny, co pozwala na uzyskanie najwyższej oceny zgodnie z wytycznymi projektu.
+Team Task Manager to nowoczesna, webowa aplikacja oparta o Javę (Spring Boot) z frontendem React TypeScript i przemyślaną strategią animacji. Framer Motion zapewnia wszystkie animacje UI, podczas gdy Lottie dostarcza złożone animacje wektorowe. Taka architektura zapewnia optymalną wydajność, spójność i łatwość utrzymania.

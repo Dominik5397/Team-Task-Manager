@@ -16,7 +16,9 @@ Team Task Manager is a modern, animated web application for team task management
 - **Glassmorphism UI** with backdrop-filter effects
 - **Animated background** with floating particles
 - **Responsive design** that works on all devices
-- **Rich animations** using Framer Motion and Lottie
+- **Rich animations** using our proven dual-library strategy ([see ANIMATION_STRATEGY.md](ANIMATION_STRATEGY.md))
+  - **Framer Motion** for all UI animations and interactions
+  - **Lottie React** for complex vector animations and illustrations
 - **Beautiful gradients** and custom CSS properties
 
 ### 📊 Task Management
@@ -275,34 +277,36 @@ The application includes sample users and tasks:
 ./gradlew test
 ```
 
-## 📱 Responsive Design
+## 📱 **Responsive Design**
 
 The application is fully responsive with:
 - **Mobile-first approach**
 - **Flexible grid layouts**
 - **Touch-friendly interactions**
-- **Optimized animations** for mobile
+- **GPU-optimized animations** for mobile ([see Performance Guide](ANIMATION_PERFORMANCE_GUIDE.md))
 - **Adaptive component sizing**
 
-## 📚 Documentation
+## 📚 **Documentation**
 
+- **[Animation Strategy](ANIMATION_STRATEGY.md)** - Comprehensive animation architecture and dual-library approach
+- **[Performance Guide](ANIMATION_PERFORMANCE_GUIDE.md)** - 60fps optimization techniques and GPU acceleration
 - **[Service Layer Guide](SERVICE_LAYER_GUIDE.md)** - Detailed architecture documentation
 - **[Validation Guide](VALIDATION_GUIDE.md)** - Data validation and enum implementation
 - **API Documentation** - Available through endpoint exploration
 
-## 🎭 Animation Showcase
+## 🎭 **Animation Showcase**
+
+### GPU-Optimized Performance
+- **60fps animations** using only `transform` and `opacity`
+- **Zero layout thrashing** with hardware acceleration
+- **Device-adaptive performance** based on capabilities
+- **Real-time monitoring** tools for development
 
 ### Micro-interactions
 - Button hover effects with scale and color transitions
 - Card animations with lift and shadow effects
 - Loading spinners with CSS animations
 - Form validation with shake effects
-
-### Page Animations
-- Staggered entrance animations
-- Route transitions with fade effects
-- Modal animations with scale and blur
-- Toast notifications sliding from right
 
 ## 📊 Performance Features
 

@@ -2,9 +2,12 @@ package org.example;
 
 import org.example.Task;
 import org.example.TaskRepository;
+import org.example.TaskStatus;
+import org.example.TaskPriority;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -12,6 +15,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
+@ActiveProfiles("test")
 public class TaskRepositoryTest {
     @Autowired
     private TaskRepository taskRepository;
